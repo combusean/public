@@ -29,7 +29,27 @@ describe Calculator do
       numbers = [1,2,3,4,5]
       @calculator.add(numbers.join(',')).should == numbers.inject(:+)
     end
+    
+    context 'with a new delimiter' do
+      
+      before :all do
+        @calculator.delimiters << "\n"
+      end
 
+      it 'can handle multiple delimiters' do 
+        @calculator.add("1\n2,3").should == 6
+      end
+
+      it 'rejects malformed delimitation' do
+        expect {
+          @calculator.add("1,\n") 
+        }.to raise_error(ArgumentError)
+        expect {
+          @calculator.add("1\n,")
+        }.to raise_error(ArgumentError)
+      end
+      
+    end
   end
 
 end
