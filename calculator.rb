@@ -16,6 +16,7 @@ class Calculator
     numbers = sanitize_input(numbers)
     check_input(numbers)
     regex = '[' + @delimiters.join() + ']'
+    @delimiters = DEFAULT_DELIMITERS
 
     numbers = numbers.split(/#{regex}/)
     numbers.map!(&:to_f)
@@ -24,8 +25,16 @@ class Calculator
 
   def sanitize_input(numbers)
     numbers ||= ''
+    numbers = configure_delimiters(numbers) if numbers.index("//") == 0
     numbers.gsub!(' ', '')
     numbers
+  end
+
+  def configure_delimiters(configuration)
+    @delimiters = [configuration[2..configuration.index("\n")]]
+    configuration = configuration.split("\n")
+    configuration.shift
+    configuration.join("\n")
   end
 
   def check_input(numbers)

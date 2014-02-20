@@ -31,9 +31,13 @@ describe Calculator do
     end
     
     context 'with a new delimiter' do
-      
-      before :all do
-        @calculator.delimiters << "\n"
+
+      before :each do
+        @calculator.delimiters = [",", "\n"]
+      end
+
+      after :each do 
+        @calculator.delimiters = Calculator::DEFAULT_DELIMITERS
       end
 
       it 'can handle multiple delimiters' do 
@@ -48,8 +52,13 @@ describe Calculator do
           @calculator.add("1\n,")
         }.to raise_error(ArgumentError)
       end
-      
     end
+
+    it 'can accept delimiters in the input with ^//' do
+      @calculator.add("//;\n1;2").should == 3
+    end
+
+
   end
 
 end
