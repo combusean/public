@@ -24,6 +24,12 @@ describe Calculator do
       @calculator.add('2.2, 2.2').should == 4.4
       @calculator.add('2.2, 2.2, 2.2').should == 6.6
     end
+    
+    it 'can add all sorts of numbers' do 
+      numbers = [1,2,3,4,5]
+      @calculator.add(numbers.join(',')).should == numbers.inject(:+)
+    end
+
   end
 
 end
