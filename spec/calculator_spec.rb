@@ -29,8 +29,13 @@ describe Calculator do
       numbers = [1,2,3,4,5]
       @calculator.add(numbers.join(',')).should == numbers.inject(:+)
     end
-    
-    context 'with a new delimiter' do
+
+   it 'cannot add negative numbers' do
+     expect { @calculator.add("-1,4")  }.to raise_error(ArgumentError, /-1/)
+     expect { @calculator.add("-1,-5") }.to raise_error(ArgumentError, /-1,-5/)
+   end
+
+   context 'with a new delimiter' do
 
       before :each do
         @calculator.delimiters = [",", "\n"]
@@ -45,12 +50,8 @@ describe Calculator do
       end
 
       it 'rejects malformed delimitation' do
-        expect {
-          @calculator.add("1,\n") 
-        }.to raise_error(ArgumentError)
-        expect {
-          @calculator.add("1\n,")
-        }.to raise_error(ArgumentError)
+        expect { @calculator.add("1,\n") }.to raise_error(ArgumentError)
+        expect { @calculator.add("1\n,") }.to raise_error(ArgumentError)
       end
     end
 

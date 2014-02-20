@@ -12,20 +12,20 @@ class Calculator
   end
 
   def add(numbers = '')
-
     numbers = sanitize_input(numbers)
     check_input(numbers)
     regex = '[' + @delimiters.join() + ']'
     @delimiters = DEFAULT_DELIMITERS
 
     numbers = numbers.split(/#{regex}/)
+    check_negatives(numbers)
     numbers.map!(&:to_f)
     numbers.inject(0) { |sum, s| sum += s }.round(PRECISION)
   end
 
   def sanitize_input(numbers)
     numbers ||= ''
-    numbers = configure_delimiters(numbers) if numbers.index("//") == 0
+    numbers = configure_delimiters(numbers) if numbers.index('//') == 0
     numbers.gsub!(' ', '')
     numbers
   end
@@ -40,10 +40,16 @@ class Calculator
   def check_input(numbers)
     check_delimiters(numbers) if @delimiters.length > 1
   end
+    
+  def check_negatives(numbers)
+    numbers_copy = numbers.clone
+    numbers_copy.delete_if { |number| number.to_f > 0 }
+    raise ArgumentError, 'Negatives not allowed: ' + numbers_copy.join(',') if numbers_copy.length > 0
+  end
 
   def check_delimiters(numbers)
     @delimiters.all_possibilities(@delimiters.length).map(&:join).each do |invalid_occurence|
-      raise ArgumentError, "Invalid delimiters in input." if numbers =~ /#{invalid_occurence}/ 
+      raise ArgumentError, 'Invalid delimiters in input.' if numbers =~ /#{invalid_occurence}/ 
     end
   end
 
